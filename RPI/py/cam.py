@@ -9,9 +9,9 @@ camera = picamera.PiCamera()
 
 camera.start_preview()
 
-test = camera.capture('%s.jpg' % time.time())
+camera.capture('%s.jpg' % time.time())
 
-img = Image.open(test)
+
 
 time.sleep(5)
 

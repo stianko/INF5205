@@ -19,12 +19,9 @@ from subprocess import call
 import RPi.GPIO as GPIO
 import time
 
+#The trigger button
 GPIO.setmode(GPIO.BCM)
-
 GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-
-
 
 screenMode      =  1     # Current screen mode; default = viewfinder
 screenModePrior = -1      # Prior screen mode (for detecting changes)
@@ -38,7 +35,6 @@ iconPath        = 'icons' # Subdirectory containing UI bitmaps (PNG format)
 saveIdx         = -1      # Image index for saving (-1 = none set yet)
 loadIdx         = -1      # Image index for loading
 scaled          = None    # pygame Surface w/last-loaded image
-
 
 
 sizeData = [ # Camera parameters for different size settings
@@ -56,19 +52,7 @@ fxData = [
   'negative', 'colorswap', 'posterise', 'denoise', 'blur', 'film',
   'washedout', 'emboss', 'cartoon', 'solarize' ]
 
-
 icons = [] # This list gets populated at startup
-
-# buttons[] is a list of lists; each top-level list element corresponds
-# to one screen mode (e.g. viewfinder, image playback, storage settings),
-# and each element within those lists corresponds to one UI button.
-# There's a little bit of repetition (e.g. prev/next buttons are
-# declared for each settings screen, rather than a single reusable
-# set); trying to reuse those few elements just made for an ugly
-# tangle of code elsewhere.
-
-
-
 
 # Initialization -----------------------------------------------------------
 
@@ -93,6 +77,7 @@ yuv = bytearray(320 * 240 * 3 / 2)
 pygame.init()
 pygame.mouse.set_visible(False)
 screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+myfont = pygame.font.SysFont("monospace", 15)
 
 # Init camera and set up default values
 camera            = picamera.PiCamera()
@@ -102,6 +87,21 @@ camera.resolution = sizeData[sizeMode][1]
 camera.crop       = (0.0, 0.0, 1.0, 1.0)
 # Leave raw format at default YUV, don't touch, don't set to RGB!
 
+#switch case to simulate travel route
+option = {0 : oslo,
+1 : asker,
+2 : drammen,
+3 : holmestrand,
+4 : tonsberg,
+5 : sandefjord,
+6 : porsgrunn,
+7 : arendal,
+8 : kristiansand
+}
+
+def oslo():
+  label = myfont.render("Some text!", 1, (255,255,0))
+  screen.blit(label, (100, 100))
 
 
 
@@ -116,12 +116,13 @@ while(tmp == 0):
   #screen.blit(background_surface, (320,240))
   input_state = GPIO.input(21)
   if screenMode < 2: # Playback mode or delete confirmation
-      img = scaled       # Show last-loaded image
+    img = scaled       # Show last-loaded image
   if img:
-      screen.blit(img,
-        ((320 - img.get_width() ) / 2,
-         (240 - img.get_height()) / 2))
-      pygame.display.flip()
+    option[0]()
+      #screen.blit(img,
+        #((320 - img.get_width() ) / 2,
+         #(240 - img.get_height()) / 2))
+    pygame.display.flip()
   while(input_state == False):
     screenMode = 3
     

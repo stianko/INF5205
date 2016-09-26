@@ -1,4 +1,4 @@
-
+import serial
 import atexit
 import Image
 import cPickle as pickle
@@ -18,6 +18,10 @@ from subprocess import call
 
 import RPi.GPIO as GPIO
 import time
+
+#serial data
+ser = serial.Serial('/dev/ttyACM0', 115200)
+
 
 #The trigger button
 GPIO.setmode(GPIO.BCM)
@@ -120,14 +124,14 @@ def kristiansand():
   
 option = {
   0 : oslo,
-  1 : asker,
-  2 : drammen,
-  3 : holmestrand,
-  4 : tonsberg,
-  5 : sandefjord,
-  6 : porsgrunn,
-  7 : arendal,
-  8 : kristiansand
+  10 : asker,
+  20 : drammen,
+  30 : holmestrand,
+  40 : tonsberg,
+  50 : sandefjord,
+  60 : porsgrunn,
+  70 : arendal,
+  80 : kristiansand
 }
 
 # Main loop ----------------------------------------------------------------
@@ -137,13 +141,19 @@ sim = 0
 background_surface = pygame.image.load('img2.jpg')
 scaled = pygame.image.load('img2.jpg')
 scaled = pygame.transform.scale(scaled, (320,240))
-print(scaled.get_height())
+#print(scaled.get_height())
 while(tmp == 0):
+  #read serial
+  read_serial=ser.readline()
+  print read_serial
+
+  
   #screen.blit(background_surface, (320,240))
   input_state = GPIO.input(21)
+  #print(input_state)
   if screenMode < 2: # Playback mode or delete confirmation
     img = scaled       # Show last-loaded image
-  if img:
+  if((sim==0) or (sim==10) or (sim ==20) or (sim == 30) or (sim==40)):
     screen.fill(0)
     option[sim]()
       #screen.blit(img,
@@ -187,17 +197,19 @@ while(tmp == 0):
     # Overlay buttons on display and update
       
     print('Button pressed!')
+    #print(input_state)
     #camera.capture('%s.jpg' % time.time())
     
     pygame.display.update()
 
+  
     screenModePrior = screenMode
     count = count + 1
     if (count > 50):
       tmp = 1
       break
   sim = sim + 1
-  if(sim==9):
+  if(sim==90):
     sim = 0
   time.sleep(0.2)
       

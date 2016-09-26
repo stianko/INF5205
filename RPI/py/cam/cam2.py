@@ -77,7 +77,7 @@ yuv = bytearray(320 * 240 * 3 / 2)
 pygame.init()
 pygame.mouse.set_visible(False)
 screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
-myfont = pygame.font.SysFont("monospace", 15)
+myfont = pygame.font.SysFont("monospace", 30)
 
 # Init camera and set up default values
 camera            = picamera.PiCamera()
@@ -88,26 +88,52 @@ camera.crop       = (0.0, 0.0, 1.0, 1.0)
 # Leave raw format at default YUV, don't touch, don't set to RGB!
 
 #switch case to simulate travel route
-option = {0 : oslo,
-1 : asker,
-2 : drammen,
-3 : holmestrand,
-4 : tonsberg,
-5 : sandefjord,
-6 : porsgrunn,
-7 : arendal,
-8 : kristiansand
-}
+
 
 def oslo():
-  label = myfont.render("Some text!", 1, (255,255,0))
+  label = myfont.render("Oslo", 1, (255,255,255))
   screen.blit(label, (100, 100))
-
-
+def asker():
+  label = myfont.render("Asker", 1, (255,255,255))
+  screen.blit(label, (100, 100))
+def drammen():
+  label = myfont.render("Drammen", 1, (255,255,255))
+  screen.blit(label, (100, 100))
+def holmestrand():
+  label = myfont.render("Holmestrand", 1, (255,255,255))
+  screen.blit(label, (100, 100))
+def tonsberg():
+  label = myfont.render("Tonsberg", 1, (255,255,255))
+  screen.blit(label, (100, 100))
+def sandefjord():
+  label = myfont.render("Sandefjord", 1, (255,255,255))
+  screen.blit(label, (100, 100))
+def porsgrunn():
+  label = myfont.render("Porsgrunn", 1, (255,255,255))
+  screen.blit(label, (100, 100))
+def arendal():
+  label = myfont.render("Arendal", 1, (255,255,255))
+  screen.blit(label, (100, 100))
+def kristiansand():
+  label = myfont.render("Kristiansand", 1, (255,255,255))
+  screen.blit(label, (100, 100))
+  
+option = {
+  0 : oslo,
+  1 : asker,
+  2 : drammen,
+  3 : holmestrand,
+  4 : tonsberg,
+  5 : sandefjord,
+  6 : porsgrunn,
+  7 : arendal,
+  8 : kristiansand
+}
 
 # Main loop ----------------------------------------------------------------
 count = 0
 tmp = 0
+sim = 0
 background_surface = pygame.image.load('img2.jpg')
 scaled = pygame.image.load('img2.jpg')
 scaled = pygame.transform.scale(scaled, (320,240))
@@ -118,10 +144,12 @@ while(tmp == 0):
   if screenMode < 2: # Playback mode or delete confirmation
     img = scaled       # Show last-loaded image
   if img:
-    option[0]()
+    screen.fill(0)
+    option[sim]()
       #screen.blit(img,
         #((320 - img.get_width() ) / 2,
          #(240 - img.get_height()) / 2))
+    
     pygame.display.flip()
   while(input_state == False):
     screenMode = 3
@@ -168,6 +196,10 @@ while(tmp == 0):
     if (count > 50):
       tmp = 1
       break
+  sim = sim + 1
+  if(sim==9):
+    sim = 0
+  time.sleep(0.2)
       
 
 

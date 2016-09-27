@@ -3,7 +3,14 @@ import serial
 ser = serial.Serial('/dev/ttyACM0',115200)
 s = [0,1]
 while True:
-	read_serial=ser.readline()
-	#s[0] = str(int (ser.readline(),16))
-	#print s[0]
-	print read_serial
+  read=ser.readline()
+  s = map(float,read.split(","))
+  time = s[0]
+  pot = s[1]
+  
+  print ('Time')
+  print (time)
+  print ('Position')
+  print (pot)
+  print ('Diff')
+  print (pot/time)

@@ -17,7 +17,7 @@ from pygame.locals import *
 from subprocess import call
 
 import RPi.GPIO as GPIO
-import time
+
 
 #serial data
 ser = serial.Serial('/dev/ttyACM0', 115200)
@@ -124,14 +124,14 @@ def kristiansand():
   
 option = {
   0 : oslo,
-  10 : asker,
-  20 : drammen,
-  30 : holmestrand,
-  40 : tonsberg,
-  50 : sandefjord,
-  60 : porsgrunn,
-  70 : arendal,
-  80 : kristiansand
+  100 : asker,
+  200 : drammen,
+  300 : holmestrand,
+  400 : tonsberg,
+  500 : sandefjord,
+  600 : porsgrunn,
+  700 : arendal,
+  800 : kristiansand
 }
 
 # Main loop ----------------------------------------------------------------
@@ -142,10 +142,23 @@ background_surface = pygame.image.load('img2.jpg')
 scaled = pygame.image.load('img2.jpg')
 scaled = pygame.transform.scale(scaled, (320,240))
 #print(scaled.get_height())
-while(tmp == 0):
+running = True
+while(running):
+  
   #read serial
-  read_serial=ser.readline()
-  print read_serial
+  read=ser.readline()
+  s = map(float,read.split(","))
+  t = s[0]
+  pot = s[1]
+
+  diff = pot/t
+  
+  #print ('Time')
+  #print (t)
+  #print ('Position')
+  #print (pot)
+  #print ('Diff')
+ # print (t / pot)
 
   
   #screen.blit(background_surface, (320,240))
@@ -153,14 +166,56 @@ while(tmp == 0):
   #print(input_state)
   if screenMode < 2: # Playback mode or delete confirmation
     img = scaled       # Show last-loaded image
-  if((sim==0) or (sim==10) or (sim ==20) or (sim == 30) or (sim==40)):
+
+  #hard coded, ugly ugly code
+  if(pot > 0.0 and pot < 99.0):
+    print(pot)  
     screen.fill(0)
-    option[sim]()
+    oslo()
+    print(pot)
+    pygame.display.flip()
+  elif(pot > 100.0 and pot < 199.0):
+    screen.fill(0)
+    asker()
+    pygame.display.flip()
+  elif(pot > 200.0 and pot < 299.0):
+    screen.fill(0)
+    drammen()
+    pygame.display.flip()
+  elif(pot > 300.0 and pot < 399.0):
+    screen.fill(0)
+    holmestrand()
+    pygame.display.flip()
+  elif(pot > 400.0 and pot < 499.0):
+    screen.fill(0)
+    tonsberg()
+    pygame.display.flip()
+  elif(pot > 500.0 and pot < 599.0):
+    screen.fill(0)
+    sandefjord()
+    pygame.display.flip()
+  elif(pot > 600.0 and pot < 699.0):
+    screen.fill(0)
+    porsgrunn()
+    pygame.display.flip()
+  elif(pot > 700.0 and pot < 799.0):
+    screen.fill(0)
+    arendal()
+    pygame.display.flip()
+  else:
+    screen.fill(0)
+    kristiansand()
+    pygame.display.flip()
+  
+
+  #if((pot==0) or (pot==100) or (pot ==200) or (pot == 300) or (pot==400) or (pot==500) or (pot==600) or (pot==700) or (pot==800)):
+   # screen.fill(0)
+    #option[pot]()
       #screen.blit(img,
         #((320 - img.get_width() ) / 2,
          #(240 - img.get_height()) / 2))
     
-    pygame.display.flip()
+    #pygame.display.flip()
   while(input_state == False):
     screenMode = 3
     
@@ -206,12 +261,21 @@ while(tmp == 0):
     screenModePrior = screenMode
     count = count + 1
     if (count > 50):
-      tmp = 1
+      running = False
       break
-  sim = sim + 1
-  if(sim==90):
-    sim = 0
-  time.sleep(0.2)
+  for event in pygame.event.get():
+    if event.type == pygame.KEYDOWN:
+      if event.key == pygame.K_ESCAPE:
+        running = False
+        break
+      elif event.type == pygame.QUIT:
+        running = False
+        break
+      if not running:
+        break
+      
+  
+  
       
 
 

@@ -168,37 +168,37 @@ while(running):
     img = scaled       # Show last-loaded image
 
   #hard coded, ugly ugly code
-  if(pot > 0.0 and pot < 99.0):
+  if(pot > 0.0 and pot < 100.0):
     print(pot)  
     screen.fill(0)
     oslo()
     print(pot)
     pygame.display.flip()
-  elif(pot > 100.0 and pot < 199.0):
+  elif(pot > 100.0 and pot < 200.0):
     screen.fill(0)
     asker()
     pygame.display.flip()
-  elif(pot > 200.0 and pot < 299.0):
+  elif(pot > 200.0 and pot < 300.0):
     screen.fill(0)
     drammen()
     pygame.display.flip()
-  elif(pot > 300.0 and pot < 399.0):
+  elif(pot > 300.0 and pot < 400.0):
     screen.fill(0)
     holmestrand()
     pygame.display.flip()
-  elif(pot > 400.0 and pot < 499.0):
+  elif(pot > 400.0 and pot < 500.0):
     screen.fill(0)
     tonsberg()
     pygame.display.flip()
-  elif(pot > 500.0 and pot < 599.0):
+  elif(pot > 500.0 and pot < 600.0):
     screen.fill(0)
     sandefjord()
     pygame.display.flip()
-  elif(pot > 600.0 and pot < 699.0):
+  elif(pot > 600.0 and pot < 700.0):
     screen.fill(0)
     porsgrunn()
     pygame.display.flip()
-  elif(pot > 700.0 and pot < 799.0):
+  elif(pot > 700.0 and pot < 800.0):
     screen.fill(0)
     arendal()
     pygame.display.flip()
@@ -264,9 +264,9 @@ while(running):
     if (count > 50):
       print('Button released')
       camera.capture('img/%s.jpg' % pot)
-      running = False
-      input_state = True
-      break
+      #running = False
+     #input_state = True
+      #break
   for event in pygame.event.get():
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_ESCAPE:

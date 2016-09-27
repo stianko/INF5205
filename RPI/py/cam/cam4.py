@@ -265,9 +265,9 @@ while(running):
     if (count > 50):
       print('Button released')
       camera.capture('img/%s.jpg' % pot)
-      running = False
+      running = True
       input_state = True
-      break
+      screen.fill(0)
   for event in pygame.event.get():
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_ESCAPE:

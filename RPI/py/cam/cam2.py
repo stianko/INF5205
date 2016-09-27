@@ -206,6 +206,7 @@ while(running):
     screen.fill(0)
     kristiansand()
     pygame.display.flip()
+
   
 
   #if((pot==0) or (pot==100) or (pot ==200) or (pot == 300) or (pot==400) or (pot==500) or (pot==600) or (pot==700) or (pot==800)):
@@ -261,7 +262,10 @@ while(running):
     screenModePrior = screenMode
     count = count + 1
     if (count > 50):
+      print('Button released')
+      camera.capture('img/%s.jpg' % pot)
       running = False
+      input_state = True
       break
   for event in pygame.event.get():
     if event.type == pygame.KEYDOWN:
@@ -279,6 +283,5 @@ while(running):
       
 
 
-print('Button released')
-camera.capture('%s.jpg' % time.time())
+
 

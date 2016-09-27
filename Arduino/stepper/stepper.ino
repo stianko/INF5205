@@ -73,7 +73,7 @@ void runBetween(long startPos, long endPos, long duration) {
     if (debug) Serial.print(relative_pos_desired);
 
     // Time for serial
-    Serial.print("t");
+    //Serial.print("t");
     Serial.print(relative_pos_desired);
 
     
@@ -88,7 +88,7 @@ void runBetween(long startPos, long endPos, long duration) {
     */
 
     // Position for serial
-    Serial.print("p");
+    Serial.print(",");
     Serial.println(current_pos);
 
     if (debug) Serial.print("   Pot_now " );

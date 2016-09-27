@@ -92,7 +92,11 @@ camera.crop       = (0.0, 0.0, 1.0, 1.0)
 # Leave raw format at default YUV, don't touch, don't set to RGB!
 
 #switch case to simulate travel route
-
+def showImg(img):
+  screen.blit(img,
+        ((320 - img.get_width() ) / 2,
+         (240 - img.get_height()) / 2))
+  
 
 def oslo():
   label = myfont.render("Oslo", 1, (255,255,255))
@@ -139,9 +143,12 @@ count = 0
 tmp = 0
 sim = 0
 background_surface = pygame.image.load('img2.jpg')
-scaled = pygame.image.load('img2.jpg')
-scaled = pygame.transform.scale(scaled, (320,240))
+scaled = None
+#scaled = pygame.image.load('img2.jpg')
+#scaled = pygame.transform.scale(scaled, (320,240))
 #print(scaled.get_height())
+imgPot = 0
+tmpImg = None
 running = True
 while(running):
   
@@ -167,47 +174,51 @@ while(running):
   if screenMode < 2: # Playback mode or delete confirmation
     img = scaled       # Show last-loaded image
 
-  #hard coded, ugly ugly code
-  if(pot > 0.0 and pot < 100.0):
-    print(pot)  
+  if scaled is not None and imgPot < pot + 20 and imgPot > pot - 20 and (diff < 0.97):
     screen.fill(0)
-    oslo()
-    print(pot)
+    showImg(scaled)
     pygame.display.flip()
-  elif(pot > 100.0 and pot < 200.0):
-    screen.fill(0)
-    asker()
-    pygame.display.flip()
-  elif(pot > 200.0 and pot < 300.0):
-    screen.fill(0)
-    drammen()
-    pygame.display.flip()
-  elif(pot > 300.0 and pot < 400.0):
-    screen.fill(0)
-    holmestrand()
-    pygame.display.flip()
-  elif(pot > 400.0 and pot < 500.0):
-    screen.fill(0)
-    tonsberg()
-    pygame.display.flip()
-  elif(pot > 500.0 and pot < 600.0):
-    screen.fill(0)
-    sandefjord()
-    pygame.display.flip()
-  elif(pot > 600.0 and pot < 700.0):
-    screen.fill(0)
-    porsgrunn()
-    pygame.display.flip()
-  elif(pot > 700.0 and pot < 800.0):
-    screen.fill(0)
-    arendal()
-    pygame.display.flip()
+    print 'here now'
   else:
-    screen.fill(0)
-    kristiansand()
-    pygame.display.flip()
+    #hard coded, ugly ugly code
+    if(pot > 0.0 and pot < 100.0):
+      screen.fill(0)
+      oslo()
+      pygame.display.flip()
+    elif(pot > 100.0 and pot < 200.0):
+      screen.fill(0)
+      asker()
+      pygame.display.flip()
+    elif(pot > 200.0 and pot < 300.0):
+      screen.fill(0)
+      drammen()
+      pygame.display.flip()
+    elif(pot > 300.0 and pot < 400.0):
+      screen.fill(0)
+      holmestrand()
+      pygame.display.flip()
+    elif(pot > 400.0 and pot < 500.0):
+      screen.fill(0)
+      tonsberg()
+      pygame.display.flip()
+    elif(pot > 500.0 and pot < 600.0):
+      screen.fill(0)
+      sandefjord()
+      pygame.display.flip()
+    elif(pot > 600.0 and pot < 700.0):
+      screen.fill(0)
+      porsgrunn()
+      pygame.display.flip()
+    elif(pot > 700.0 and pot < 800.0):
+      screen.fill(0)
+      arendal()
+      pygame.display.flip()
+    else:
+      screen.fill(0)
+      kristiansand()
+      pygame.display.flip()
 
-  
+
 
   #if((pot==0) or (pot==100) or (pot ==200) or (pot == 300) or (pot==400) or (pot==500) or (pot==600) or (pot==700) or (pot==800)):
    # screen.fill(0)
@@ -261,11 +272,17 @@ while(running):
   
     screenModePrior = screenMode
     count = count + 1
-    if (count > 50):
+    if (count == 50):
       print('Button released')
-      camera.capture('img/%s.jpg' % pot)
+      fileName = str(pot) + '.jpg' 
+      camera.capture(fileName)
+      img = pygame.image.load(fileName)
+      scaled = pygame.transform.scale(img,(320, 240))
+      imgPot = pot
+      print imgPot
       #running = False
-     #input_state = True
+      input_state = True
+      count = 0
       #break
   for event in pygame.event.get():
     if event.type == pygame.KEYDOWN:

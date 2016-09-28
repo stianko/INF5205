@@ -91,12 +91,13 @@ camera.resolution = sizeData[sizeMode][1]
 camera.crop       = (0.0, 0.0, 1.0, 1.0)
 # Leave raw format at default YUV, don't touch, don't set to RGB!
 
-#switch case to simulate travel route
+
 def showImg(img):
   screen.blit(img,
         ((320 - img.get_width() ) / 2,
          (240 - img.get_height()) / 2))
-
+  
+#switch case to simulate travel route
 def tripCycle():
 #hard coded, ugly ugly code
   if(pot > 0.0 and pot < 100.0):
@@ -218,10 +219,16 @@ while(running):
   if screenMode < 2: # Playback mode or delete confirmation
     img = scaled       # Show last-loaded image
 
+  #if images is not None:
+    
   try:
-    if scaled is not None and imgPot < pot + 20 and imgPot > pot - 20 and (diff < 0.97):
+    if pot + 20 >= images.index(pot) or pot -20 <= images.index(pot):
+    #if images is not None and imgPot < pot + 20 and imgPot > pot - 20 and (diff < 0.97):
       screen.fill(0)
-      showImg(scaled)
+      imgName = str(pot) + '.jpg'
+      img = pygame.image.load(imgName)
+      callImg = pygame.transform.scale(img,(320, 240))
+      showImg(callImg)
       pygame.display.flip()
       print 'here now'
     else:
@@ -297,7 +304,10 @@ while(running):
       imgPot = pot
 
       #append the image to list
+      
       images.append(pot)
+      #range(pot, pot+10, 1)
+        
       
       print imgPot
       #running = False
@@ -315,7 +325,7 @@ while(running):
       if not running:
         break
       
-  
+print images
   
       
 

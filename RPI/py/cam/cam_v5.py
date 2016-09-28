@@ -92,23 +92,23 @@ camera.crop       = (0.0, 0.0, 1.0, 1.0)
 # Leave raw format at default YUV, don't touch, don't set to RGB!
 
 
-def showImg(img):
-  screen.blit(img,
-        ((320 - img.get_width() ) / 2,
-         (240 - img.get_height()) / 2))
+
 
 #switch case to simulate travel route
 def tripCycle():
-  if mapCities(pot) == cities[mapCities(pot)]:
-    screen.fill(0)
-    writeCities(mapCities(pot))
-    pygame.display.flip()
+  try:
+    if mapCities(pot) == cities[mapCities(pot)]:
+      screen.fill(0)
+      writeCities(mapCities(pot))
+      pygame.display.flip()
 
-  else:
-    screen.fill(0)
-    writeCities(mapCities(pot))
-    pygame.display.flip()
-
+    else:
+      screen.fill(0)
+      writeSign(mapCities(pot))
+      writeCities(mapCities(pot))
+      pygame.display.flip()
+  except IndexError:
+    print "End"
 
 #Change last value if you want to be able to take more pictures  
 def mapValue(value):
@@ -130,14 +130,23 @@ cities = [
   "Kristiansand"
   ]
 
-
-
+#rotate image
+def rotate(img):
+  rImg = pygame.transform.rotate(img, 180)
+#show image
+def showImg(img):
+  rImg = pygame.transform.rotate(img, 180)
+  screen.blit(rImg,
+        ((320 - img.get_width() ) / 2,
+         (240 - img.get_height()) / 2))
 def writeCities(value):
   label = myfont.render(cities[value], 1, (255,255,255))
-  screen.blit(label, (80,170))
+  rLabel = pygame.transform.rotate(label, 180)
+  screen.blit(rLabel, (80,170))
 def writeSign(value):
   sign = pygame.image.load('skilt.png')
-  screen.blit(sign,
+  rSign = pygame.transform.rotate(sign, 180)
+  screen.blit(rSign,
         ((320 - img.get_width() ) / 2,
          (240 - img.get_height()) / 2))
   label = myfont.render(cities[value], 1, (255,255,255))
@@ -165,12 +174,15 @@ while(running):
   
   #read serial
   read=ser.readline()
-  s = map(int, read.split(","))
-  t = s[0]
-  pot = s[1]
-
-  diff = pot/t
+  try:
+    s = map(int, read.split(","))
   
+    t = s[0]
+    pot = s[1]
+
+    diff = pot/t
+  except ValueError:
+    print "Ended"
   #print ('Time')
   #print (t)
   #print ('Position')
@@ -188,7 +200,7 @@ while(running):
   #if images is not None:
     
   try:
-    if mapValue(pot) in images:
+    if mapValue(pot) in images and diff > 0.97:
     #if pot + 20 >= images.index(pot) or pot -20 <= images.index(pot):
     #if images is not None and imgPot < pot + 20 and imgPot > pot - 20 and (diff < 0.97):
       screen.fill(0)
@@ -198,12 +210,12 @@ while(running):
       showImg(callImg)
       writeSign(mapCities(pot))
       
-      pygame.transform.rotate(img, 180)
+    
       pygame.display.flip()
       print 'here now'
     else:
       tripCycle()
-  except ValueError:
+  except ValueError, IndexError:
     print "Didnt find pot value, not in array. Cycling through trip again."
     tripCycle() 
      

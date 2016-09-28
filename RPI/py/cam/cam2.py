@@ -96,6 +96,46 @@ def showImg(img):
   screen.blit(img,
         ((320 - img.get_width() ) / 2,
          (240 - img.get_height()) / 2))
+
+def tripCycle():
+#hard coded, ugly ugly code
+  if(pot > 0.0 and pot < 100.0):
+    screen.fill(0)
+    oslo()
+    pygame.display.flip()
+  elif(pot > 100.0 and pot < 200.0):
+    screen.fill(0)
+    asker()
+    pygame.display.flip()
+  elif(pot > 200.0 and pot < 300.0):
+    screen.fill(0)
+    drammen()
+    pygame.display.flip()
+  elif(pot > 300.0 and pot < 400.0):
+    screen.fill(0)
+    holmestrand()
+    pygame.display.flip()
+  elif(pot > 400.0 and pot < 500.0):
+    screen.fill(0)
+    tonsberg()
+    pygame.display.flip()
+  elif(pot > 500.0 and pot < 600.0):
+    screen.fill(0)
+    sandefjord()
+    pygame.display.flip()
+  elif(pot > 600.0 and pot < 700.0):
+    screen.fill(0)
+    porsgrunn()
+    pygame.display.flip()
+  elif(pot > 700.0 and pot < 800.0):
+    screen.fill(0)
+    arendal()
+    pygame.display.flip()
+  else:
+    screen.fill(0)
+    kristiansand()
+    pygame.display.flip()
+
   
 
 def oslo():
@@ -144,6 +184,10 @@ tmp = 0
 sim = 0
 background_surface = pygame.image.load('img2.jpg')
 scaled = None
+
+#make a list of images
+images = []
+
 #scaled = pygame.image.load('img2.jpg')
 #scaled = pygame.transform.scale(scaled, (320,240))
 #print(scaled.get_height())
@@ -154,7 +198,7 @@ while(running):
   
   #read serial
   read=ser.readline()
-  s = map(float,read.split(","))
+  s = map(int, read.split(","))
   t = s[0]
   pot = s[1]
 
@@ -174,50 +218,18 @@ while(running):
   if screenMode < 2: # Playback mode or delete confirmation
     img = scaled       # Show last-loaded image
 
-  if scaled is not None and imgPot < pot + 20 and imgPot > pot - 20 and (diff < 0.97):
-    screen.fill(0)
-    showImg(scaled)
-    pygame.display.flip()
-    print 'here now'
-  else:
-    #hard coded, ugly ugly code
-    if(pot > 0.0 and pot < 100.0):
+  try:
+    if scaled is not None and imgPot < pot + 20 and imgPot > pot - 20 and (diff < 0.97):
       screen.fill(0)
-      oslo()
+      showImg(scaled)
       pygame.display.flip()
-    elif(pot > 100.0 and pot < 200.0):
-      screen.fill(0)
-      asker()
-      pygame.display.flip()
-    elif(pot > 200.0 and pot < 300.0):
-      screen.fill(0)
-      drammen()
-      pygame.display.flip()
-    elif(pot > 300.0 and pot < 400.0):
-      screen.fill(0)
-      holmestrand()
-      pygame.display.flip()
-    elif(pot > 400.0 and pot < 500.0):
-      screen.fill(0)
-      tonsberg()
-      pygame.display.flip()
-    elif(pot > 500.0 and pot < 600.0):
-      screen.fill(0)
-      sandefjord()
-      pygame.display.flip()
-    elif(pot > 600.0 and pot < 700.0):
-      screen.fill(0)
-      porsgrunn()
-      pygame.display.flip()
-    elif(pot > 700.0 and pot < 800.0):
-      screen.fill(0)
-      arendal()
-      pygame.display.flip()
+      print 'here now'
     else:
-      screen.fill(0)
-      kristiansand()
-      pygame.display.flip()
-
+      tripCycle()
+  except ValueError:
+    print "Didnt find pot value, not in array. Cycling through trip again."
+    tripCycle() 
+     
 
 
   #if((pot==0) or (pot==100) or (pot ==200) or (pot == 300) or (pot==400) or (pot==500) or (pot==600) or (pot==700) or (pot==800)):
@@ -276,9 +288,17 @@ while(running):
       print('Button released')
       fileName = str(pot) + '.jpg' 
       camera.capture(fileName)
+
+      #Maybe need to load image later as well
       img = pygame.image.load(fileName)
+
+
       scaled = pygame.transform.scale(img,(320, 240))
       imgPot = pot
+
+      #append the image to list
+      images.append(pot)
+      
       print imgPot
       #running = False
       input_state = True

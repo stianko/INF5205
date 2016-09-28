@@ -96,91 +96,54 @@ def showImg(img):
   screen.blit(img,
         ((320 - img.get_width() ) / 2,
          (240 - img.get_height()) / 2))
-  
+
 #switch case to simulate travel route
 def tripCycle():
-#hard coded, ugly ugly code
-  if(pot > 0.0 and pot < 100.0):
+  if mapCities(pot) == cities[mapCities(pot)]:
     screen.fill(0)
-    oslo()
+    writeCities(mapCities(pot))
     pygame.display.flip()
-  elif(pot > 100.0 and pot < 200.0):
-    screen.fill(0)
-    asker()
-    pygame.display.flip()
-  elif(pot > 200.0 and pot < 300.0):
-    screen.fill(0)
-    drammen()
-    pygame.display.flip()
-  elif(pot > 300.0 and pot < 400.0):
-    screen.fill(0)
-    holmestrand()
-    pygame.display.flip()
-  elif(pot > 400.0 and pot < 500.0):
-    screen.fill(0)
-    tonsberg()
-    pygame.display.flip()
-  elif(pot > 500.0 and pot < 600.0):
-    screen.fill(0)
-    sandefjord()
-    pygame.display.flip()
-  elif(pot > 600.0 and pot < 700.0):
-    screen.fill(0)
-    porsgrunn()
-    pygame.display.flip()
-  elif(pot > 700.0 and pot < 800.0):
-    screen.fill(0)
-    arendal()
-    pygame.display.flip()
+
   else:
     screen.fill(0)
-    kristiansand()
+    writeCities(mapCities(pot))
     pygame.display.flip()
 
-  
+
+#Change last value if you want to be able to take more pictures  
 def mapValue(value):
-    return value/(1023/100)
+    return value/(1023/20)
+
+def mapCities(value):
+  return value/(1023/len(cities))
+
+cities = [
+  "Oslo",
+  "Asker",
+  "Drammen",
+  "Holmestrand",
+  "Tonsberg",
+  "Sandefjord",
+  "Porsgrunn",
+  "Arendal",
+  "Grimstad",
+  "Kristiansand"
+  ]
 
 
-def oslo():
-  label = myfont.render("Oslo", 1, (255,255,255))
-  screen.blit(label, (100, 100))
-def asker():
-  label = myfont.render("Asker", 1, (255,255,255))
-  screen.blit(label, (100, 100))
-def drammen():
-  label = myfont.render("Drammen", 1, (255,255,255))
-  screen.blit(label, (100, 100))
-def holmestrand():
-  label = myfont.render("Holmestrand", 1, (255,255,255))
-  screen.blit(label, (100, 100))
-def tonsberg():
-  label = myfont.render("Tonsberg", 1, (255,255,255))
-  screen.blit(label, (100, 100))
-def sandefjord():
-  label = myfont.render("Sandefjord", 1, (255,255,255))
-  screen.blit(label, (100, 100))
-def porsgrunn():
-  label = myfont.render("Porsgrunn", 1, (255,255,255))
-  screen.blit(label, (100, 100))
-def arendal():
-  label = myfont.render("Arendal", 1, (255,255,255))
-  screen.blit(label, (100, 100))
-def kristiansand():
-  label = myfont.render("Kristiansand", 1, (255,255,255))
-  screen.blit(label, (100, 100))
+
+def writeCities(value):
+  label = myfont.render(cities[value], 1, (255,255,255))
+  screen.blit(label, (80,170))
+def writeSign(value):
+  sign = pygame.image.load('skilt.png')
+  screen.blit(sign,
+        ((320 - img.get_width() ) / 2,
+         (240 - img.get_height()) / 2))
+  label = myfont.render(cities[value], 1, (255,255,255))
+  screen.blit(label, (80,180))
   
-option = {
-  0 : oslo,
-  100 : asker,
-  200 : drammen,
-  300 : holmestrand,
-  400 : tonsberg,
-  500 : sandefjord,
-  600 : porsgrunn,
-  700 : arendal,
-  800 : kristiansand
-}
+
 
 # Main loop ----------------------------------------------------------------
 count = 0
@@ -222,10 +185,10 @@ while(running):
   if screenMode < 2: # Playback mode or delete confirmation
     img = scaled       # Show last-loaded image
 
-  if images is not None:
+  #if images is not None:
     
   try:
-    if mapValue(pot) in images
+    if mapValue(pot) in images:
     #if pot + 20 >= images.index(pot) or pot -20 <= images.index(pot):
     #if images is not None and imgPot < pot + 20 and imgPot > pot - 20 and (diff < 0.97):
       screen.fill(0)
@@ -233,6 +196,9 @@ while(running):
       img = pygame.image.load(imgName)
       callImg = pygame.transform.scale(img,(320, 240))
       showImg(callImg)
+      writeSign(mapCities(pot))
+      
+      pygame.transform.rotate(img, 180)
       pygame.display.flip()
       print 'here now'
     else:

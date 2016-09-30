@@ -7,7 +7,10 @@ while True:
   s = map(float,read.split(","))
   time = s[0]
   pot = s[1]
-  
+  print '****************************************'
+  print 'Serial'
+  print s
+  print 
   print ('Time')
   print (time)
   print ('Position')

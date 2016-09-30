@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import serial
 import atexit
 import Image
@@ -47,16 +48,9 @@ sizeData = [ # Camera parameters for different size settings
  [(1920, 1080), (320, 180), (0.1296, 0.2222, 0.7408, 0.5556)], # Med
  [(1440, 1080), (320, 240), (0.2222, 0.2222, 0.5556, 0.5556)]] # Small
 
-isoData = [ # Values for ISO settings [ISO value, indicator X position]
- [  0,  27], [100,  64], [200,  97], [320, 137],
- [400, 164], [500, 197], [640, 244], [800, 297]]
 
-fxData = [
-  'none', 'sketch', 'gpen', 'pastel', 'watercolor', 'oilpaint', 'hatch',
-  'negative', 'colorswap', 'posterise', 'denoise', 'blur', 'film',
-  'washedout', 'emboss', 'cartoon', 'solarize' ]
 
-icons = [] # This list gets populated at startup
+
 
 # Initialization -----------------------------------------------------------
 
@@ -106,16 +100,16 @@ def tripCycle(s):
       screen.fill(0)
       writeSign(mapCities(pot))
       writeCities(mapCities(pot))
-      label = myfont.render(str(s), 1, (255,255,255))
+      #label = myfont.render(str(s), 1, (255,255,255))
       
-      screen.blit(label,( 0, 0))
+      #screen.blit(label,( 0, 0))
       pygame.display.flip()
   except IndexError:
     print "End"
 
 #Change last value if you want to be able to take more pictures  
 def mapValue(value):
-    return value/(1023/20)
+    return value/(1023/25)
 
 def mapCities(value):
   return value/(1023/len(cities))
@@ -138,22 +132,21 @@ def rotate(img):
   rImg = pygame.transform.rotate(img, 180)
 #show image
 def showImg(img):
-  rImg = pygame.transform.rotate(img, 180)
-  screen.blit(rImg,
+  #rImg = pygame.transform.rotate(img, 180)
+  screen.blit(img,
         ((320 - img.get_width() ) / 2,
          (240 - img.get_height()) / 2))
 def writeCities(value):
   label = myfont.render(cities[value], 1, (255,255,255))
   rLabel = pygame.transform.rotate(label, 180)
-  screen.blit(rLabel, (80,170))
+  screen.blit(rLabel, (80,30))
 def writeSign(value):
   
   rSign = pygame.transform.rotate(sign, 180)
   screen.blit(rSign,
         ((320 - rSign.get_width() ) / 2,
          (240 - rSign.get_height()) / 2))
-  label = myfont.render(cities[value], 1, (255,255,255))
-  screen.blit(label, (80,180))
+  
   
 
 
@@ -197,7 +190,7 @@ while(running):
 
   
   #screen.blit(background_surface, (320,240))
-  input_state = GPIO.input(21)
+  
   #print(input_state)
   if screenMode < 2: # Playback mode or delete confirmation
     img = scaled       # Show last-loaded image
@@ -205,19 +198,21 @@ while(running):
   #if images is not None:
     
   try:
-    if mapValue(pot) in images:
+    if (mapValue(pot) in images):
     #if pot + 20 >= images.index(pot) or pot -20 <= images.index(pot):
     #if images is not None and imgPot < pot + 20 and imgPot > pot - 20 and (diff < 0.97):
-      screen.fill(0)
+      #screen.fill(0)
       imgName = str(mapValue(pot)) + '.jpg'
-      img = pygame.image.load(imgName)
-      callImg = pygame.transform.scale(imgName,(320, 240))
-      showImg(callImg)
+     
+      #img = pygame.image.load(imgName)
+      #callImg = pygame.transform.scale(imgName,(320, 240))
+      showImg(imgArray[images.index(mapValue(pot))])
       writeSign(mapCities(pot))
+      writeCities(mapCities(pot))
       
     
       pygame.display.flip()
-      print 'here now'
+      #print 'here now'
     else:
       tripCycle(s)
   except ValueError, IndexError:
@@ -234,6 +229,7 @@ while(running):
          #(240 - img.get_height()) / 2))
     
     #pygame.display.flip()
+  input_state = GPIO.input(21)
   while(input_state == False):
     screenMode = 3
     
@@ -278,20 +274,23 @@ while(running):
   
     screenModePrior = screenMode
     count = count + 1
-    if (count == 50):
+    input_state = GPIO.input(21)
+    if (input_state == True):
+
       print('Button released')
-      fileName = str(mapValue(pot)) + '.jpg' 
+      fileName = str(mapValue(t)) + '.jpg' 
       camera.capture(fileName)
 
       #Maybe need to load image later as well
       img = pygame.image.load(fileName)
-      imgArray.append(img)
+      
 
       scaled = pygame.transform.scale(img,(320, 240))
+      imgArray.append(scaled)
       imgPot = pot
 
       #append the image to list
-      images.append(mapValue(pot))
+      images.append(mapValue(t))
 
       #images.append(pot)
       #range(pot, pot+10, 1)
@@ -299,9 +298,10 @@ while(running):
       
       print imgPot
       #running = False
-      input_state = True
+      #input_state = True
       count = 0
       #break
+      
   for event in pygame.event.get():
     if event.type == pygame.KEYDOWN:
       if event.key == pygame.K_ESCAPE:
@@ -314,6 +314,7 @@ while(running):
         break
       
 print images
+print imgArray
   
       
 
